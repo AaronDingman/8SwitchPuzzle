@@ -33,9 +33,16 @@ SwitchPuzzle.prototype.init = function(elementId) {
         circleArray[i].style.left = ((mainHeight/ 2 ) + parseInt(circleArray[i].posx.slice(0, -2))) + "px";
         // Push the divs to main
         main.appendChild(circleArray[i]);
+        var self = this;
         circleArray[i].onclick = function() {
-            if (isSolved === false) {
-                toggleSelected(i);
+            if (!self.solved) {
+                if (this.classList.contains("selected")) {
+                    this.classList.remove("selected");
+                    self.selectedNodes[i] = 0;
+                } else {
+                    this.classList.add("selected");
+                    self.selectedNodes[i] = 1;
+                }
             }
         };
     }
@@ -82,11 +89,12 @@ SwitchPuzzle.prototype.solve = function() {
             }
         }
     }
-    highlightnodesToSolve(puzzle.nodesToSolve);
-    puzzle.solved = true;
+    this.highlightNodesToSolve(this.nodesToSolve);
+    this.solved = true;
 };
 
-function highlightnodesToSolve(list) {
+
+SwitchPuzzle.prototype.highlightNodesToSolve = function(list) {
     for (var i = 0; i <= list.length; i++) {
         if (list[i] === 1) {
             $("#" + i).addClass("solve1");
@@ -95,23 +103,11 @@ function highlightnodesToSolve(list) {
             $("#" + i).addClass("solve2");
         }
     }
-}
+};
 
 function resetBoard() {
     puzzle = new SwitchPuzzle();
     puzzle.init("main");
-}
-
-function toggleSelected(i) {
-    // If the div that was clicked on has a value of 0, set it to 1 and switch color to black
-    if (puzzle.selectedNodes[i] === 0) {
-        puzzle.selectedNodes[i] = 1;
-        $("#" + i).addClass("selected");
-    // else set the value back to 0, switch the color back to white
-    } else {
-        puzzle.selectedNodes[i] = 0;
-        $("#" + i).removeClass("selected");
-    }
 }
 
 $(document).ready(function () {
